@@ -1,0 +1,9 @@
+# Dependencies
+/node_modules
+auth/node_modules
+
+# Misc files
+.env
+
+# IDE
+.vscode
