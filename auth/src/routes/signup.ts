@@ -13,7 +13,7 @@ router.post('/api/users/signup',
     .isLength({ min: 10, max: 30 })
     .withMessage('Your Password must be between 10 and 30 chars')
 ],
-(request: Request, response: Response) => {
+async (request: Request, response: Response) => {
   const errors = validationResult(request);
 
   if (!errors.isEmpty()) {
