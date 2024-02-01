@@ -8,16 +8,24 @@ export const errorHandler = (
   response: Response,
   next: NextFunction,
 ) => {
-  //console.log('I am error: ', error);
   if (error instanceof RequestValidationError) {
-    console.log('error handler middleware: RequestValidationError');
+    const formattedErrors = error.errors.map(err => {
+      return {
+        message: err.msg,
+        field: err.type === 'field' ? err.path: '',
+      };
+    });
+
+    return response.status(400).send({ errors: formattedErrors });
   }
 
   if (error instanceof DatabaseConnectionError) {
-    console.log('error handler middleware: DatabaseConnectionError');
+    return response.status(500).send({ errors: [
+      { message: error.reason }
+    ]});
   }
 
   response.status(400).send({
-    message: error.message
+    errors: [{ message: 'Oops! Something went wrong' }]
   });
 };
