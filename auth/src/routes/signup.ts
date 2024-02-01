@@ -15,11 +15,13 @@ router.post('/api/users/signup',
   const errors = validationResult(request);
 
   if (!errors.isEmpty()) {
-    return response.status(400).send(errors.array());
+    throw new Error('Invalid email or password');
   }
-  console.log('Creating a user...');
-  response.send({});
 
+  console.log('Creating a user...');
+  throw new Error('Error connecting to database');
+
+  response.send({});
 });
 
 export { router as signupRouter };
