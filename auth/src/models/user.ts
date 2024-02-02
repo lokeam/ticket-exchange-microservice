@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { Password } from "../services/password";
 
 interface UserAttributes {
   email: string;
@@ -35,6 +36,21 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
+  }
+});
+
+/*
+  Note:
+  Oldschool middleware mongoose fn due to lack of async/await support.
+  Function declaration used so that we don't override the value of 'this'
+  as opposed to UserDocument.
+*/
+userSchema.pre('save', async function(done) {
+  if (this.isModified('password')) {
+    const hashed = await Password.toHash(this.get('password'));
+    this.set('password', hashed);
+
+    done();
   }
 });
 
