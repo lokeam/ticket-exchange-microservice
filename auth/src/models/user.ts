@@ -5,6 +5,23 @@ interface UserAttributes {
   password: string;
 }
 
+/*
+  Note:
+  Second interface needed to describe properties for User Model.
+*/
+interface UserModel extends mongoose.Model<UserDocument> {
+  build(attrs: UserAttributes): UserDocument;
+}
+
+/*
+  Note: UserDocument needed to describe what props a single user
+  possesses.
+*/
+interface UserDocument extends mongoose.Document {
+  email: string;
+  password: string;
+}
+
 const userSchema = new mongoose.Schema({
   email: {
     /*
@@ -21,14 +38,16 @@ const userSchema = new mongoose.Schema({
   }
 });
 
-const User = mongoose.model('User', userSchema);
-
 /*
   Note:
-  Build fn needed order to perform type checking with Mongoose.
+  TypeScript won't allow a build fn to be placed on statics
+  method without an additional interface describing User Model
+  props.
 */
-const buildUser = (attrs: UserAttributes) => {
+userSchema.statics.build = (attrs: UserAttributes) => {
   return new User(attrs);
 };
 
-export { User, buildUser };
+const User = mongoose.model<UserDocument, UserModel>('User', userSchema);
+
+export { User };
