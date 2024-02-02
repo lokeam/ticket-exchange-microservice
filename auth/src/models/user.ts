@@ -22,13 +22,13 @@ interface UserDocument extends mongoose.Document {
   password: string;
 }
 
+/*
+  Note:
+  Mongoose needs a capital S-string string constructor here,
+  as opposed to TypeScript's lowercase s-string.
+*/
 const userSchema = new mongoose.Schema({
   email: {
-    /*
-      Note:
-      Mongoose needs a capital S-string string constructor here,
-      as opposed to TypeScript's lowercase s-string.
-    */
     type: String,
     required: true
   },
