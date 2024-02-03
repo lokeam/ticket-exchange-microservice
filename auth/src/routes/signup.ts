@@ -1,5 +1,7 @@
 import express, { Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
+import Jwt from 'jsonwebtoken';
+
 import { User } from '../models/user';
 import { RequestValidationError } from '../errors/request-validation-error';
 import { BadRequestError } from '../errors/bad-request-error';
@@ -29,12 +31,20 @@ async (request: Request, response: Response) => {
     throw new BadRequestError('Sorry, that email address is already in use');
   }
 
-  // todo: hash password
-
   const user = User.build({ email, password });
   await user.save();
 
   // send off cookie/jwt here
+  // todo: securely handle key in k8s env
+  const userJwt = Jwt.sign({
+    id: user.id,
+    email: user.email
+  }, 'asdf');
+
+  // redefine entire object for TS
+  request.session = {
+    jtw: userJwt
+  };
 
   response.status(201).send(user);
 
