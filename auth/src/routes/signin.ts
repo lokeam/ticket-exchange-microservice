@@ -1,7 +1,6 @@
 import express, { Request, Response } from 'express';
-import { body, validationResult } from 'express-validator';
-import { RequestValidationError } from '../errors/request-validation-error';
-
+import { body } from 'express-validator';
+import { validateRequest } from '../middlewares/validate-request';
 
 const router = express.Router();
 
@@ -15,14 +14,9 @@ router.post('/api/users/signin',
       .notEmpty()
       .withMessage('Please include a password')
   ],
+  validateRequest,
   (request: Request, response: Response) => {
-    const errors = validationResult(request);
 
-    if (!errors.isEmpty()) {
-      throw new RequestValidationError(errors.array());
-    }
-
-    response.send('testing from signin');
 });
 
 export { router as signinRouter };
