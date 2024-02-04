@@ -36,6 +36,21 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
+  },
+});
+
+/*
+  Note:
+  Proof of concept to sanitize the data, deleting password, version key and
+  remap id property. Ideally it would be better placed in view-level logic
+  to create a static service Class or something else to propertly format the user.
+*/
+userSchema.set('toJSON', {
+  transform(doc: any, ret: any) {
+    ret.id = ret._id;
+    delete ret._id;
+    delete ret.password;
+    delete ret.__v;
   }
 });
 

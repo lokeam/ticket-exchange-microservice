@@ -35,7 +35,6 @@ async (request: Request, response: Response) => {
   await user.save();
 
   // send off cookie/jwt here
-  // todo: securely handle key in k8s env
   const userJwt = Jwt.sign({
     id: user.id,
     email: user.email
