@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
 import Jwt from 'jsonwebtoken';
 
-import { Password } from '../services/password';
+import { PasswordManager } from '../services/password';
 import { User } from '../models/user';
 import { validateRequest } from '../middlewares/validate-request';
 import { BadRequestError } from '../errors/bad-request-error';
@@ -28,7 +28,7 @@ router.post('/api/users/signin',
       throw new BadRequestError('Sorry, credentials invalid');
     }
 
-    const isMatchingPassword = await Password.compare(existingUser.password, password);
+    const isMatchingPassword = await PasswordManager.compare(existingUser.password, password);
 
     if (!isMatchingPassword) {
       throw new BadRequestError('Sorry, credentials invalid')
