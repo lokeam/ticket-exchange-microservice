@@ -39,7 +39,7 @@ async (request: Request, response: Response) => {
   const userJwt = Jwt.sign({
     id: user.id,
     email: user.email
-  }, 'asdf');
+  }, process.env.JWT_KEY!);
 
   // redefine entire object for TS
   request.session = {
