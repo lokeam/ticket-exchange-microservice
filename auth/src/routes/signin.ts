@@ -1,6 +1,11 @@
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
+import Jwt from 'jsonwebtoken';
+
+import { Password } from '../services/password';
+import { User } from '../models/user';
 import { validateRequest } from '../middlewares/validate-request';
+import { BadRequestError } from '../errors/bad-request-error';
 
 const router = express.Router();
 
@@ -15,8 +20,32 @@ router.post('/api/users/signin',
       .withMessage('Please include a password')
   ],
   validateRequest,
-  (request: Request, response: Response) => {
+  async (request: Request, response: Response) => {
+    const { email, password } = request.body;
+    const existingUser = await User.findOne({ email });
 
+    if (!existingUser) {
+      throw new BadRequestError('Sorry, credentials invalid');
+    }
+
+    const isMatchingPassword = await Password.compare(existingUser.password, password);
+
+    if (!isMatchingPassword) {
+      throw new BadRequestError('Sorry, credentials invalid')
+    }
+
+    // send off cookie/jwt here
+    const userJwt = Jwt.sign({
+      id: existingUser.id,
+      email: existingUser.email
+    }, process.env.JWT_KEY!);
+
+    // redefine entire object for TS
+    request.session = {
+      jtw: userJwt
+    };
+
+  response.status(200).send(existingUser);
 });
 
 export { router as signinRouter };
