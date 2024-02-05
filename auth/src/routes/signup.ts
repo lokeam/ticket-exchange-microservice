@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
-import Jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 import { validateRequest } from '../middlewares/validate-request';
 import { User } from '../models/user';
@@ -10,7 +10,9 @@ const router = express.Router();
 
 router.post('/api/users/signup',
 [
-  body('email').isEmail().withMessage('You must enter a valid Email'),
+  body('email')
+    .isEmail()
+    .withMessage('You must enter a valid Email'),
   body('password')
     .trim()
     .isLength({ min: 10, max: 30 })
@@ -30,7 +32,7 @@ async (request: Request, response: Response) => {
   await user.save();
 
   // send off cookie/jwt here
-  const userJwt = Jwt.sign({
+  const userJwt = jwt.sign({
     id: user.id,
     email: user.email
   }, process.env.JWT_KEY!);
