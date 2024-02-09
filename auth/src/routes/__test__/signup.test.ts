@@ -46,3 +46,21 @@ it('returns a 400 if user creds not supplied', async () => {
     })
     .expect(400);
 });
+
+it('disallows signup with previously registered email', async () => {
+  await request(app)
+    .post('/api/users/signup')
+    .send({
+      email: 'test@test.com',
+      password: 'passwordpasswordpassword'
+    })
+    .expect(201);
+
+    await request(app)
+    .post('/api/users/signup')
+    .send({
+      email: 'test@test.com',
+      password: 'passwordpasswordpassword'
+    })
+    .expect(400);
+});
