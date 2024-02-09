@@ -32,10 +32,13 @@ async (request: Request, response: Response) => {
   await user.save();
 
   // send off cookie/jwt here
-  const userJwt = jwt.sign({
-    id: user.id,
-    email: user.email
-  }, process.env.JWT_KEY!);
+  const userJwt = jwt.sign(
+    {
+      id: user.id,
+      email: user.email
+    },
+    process.env.JWT_KEY!
+  );
 
   // redefine entire object for TS
   request.session = {
