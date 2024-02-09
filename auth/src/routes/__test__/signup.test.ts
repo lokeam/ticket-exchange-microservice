@@ -10,3 +10,39 @@ it('should be returns a 201 on succesful signup', async () => {
     })
     .expect(201);
 });
+
+it('returns a 400 if email is invalid', async () => {
+  return request(app)
+    .post('/api/users/signup')
+    .send({
+      email: 'qwertyuiop',
+      password: 'passwordpasswordpassword'
+    })
+    .expect(400);
+});
+
+it('returns a 400 if password not long enough', async () => {
+  return request(app)
+    .post('/api/users/signup')
+    .send({
+      email: 'qwertyuiop',
+      password: 'p'
+    })
+    .expect(400);
+});
+
+it('returns a 400 if user creds not supplied', async () => {
+  await request(app)
+    .post('/api/users/signup')
+    .send({
+      email: 'test@test.com'
+    })
+    .expect(400);
+
+    await request(app)
+    .post('/api/users/signup')
+    .send({
+      password: 'passwordpasswordpassword'
+    })
+    .expect(400);
+});
