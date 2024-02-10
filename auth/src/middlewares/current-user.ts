@@ -6,7 +6,6 @@ interface UserPayload {
   email: string;
 }
 
-// add additional UserPayload interface to Request
 declare global {
   namespace Express {
     interface Request {
@@ -25,11 +24,14 @@ export const currentUser = (
   }
 
   try {
-    const payload = jwt.verify(request.session.jwt, process.env.JWT_KEY!) as UserPayload;
+    const payload = jwt.verify(
+      request.session.jwt,
+      process.env.JWT_KEY!
+    ) as UserPayload;
     request.currentUser = payload;
   } catch (error) {
-
-    next();
+    console.log('currentUser error: ', error);
   }
-};
 
+  next();
+};

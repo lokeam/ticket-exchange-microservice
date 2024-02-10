@@ -8,7 +8,8 @@ import { BadRequestError } from '../errors/bad-request-error';
 
 const router = express.Router();
 
-router.post('/api/users/signup',
+router.post(
+  '/api/users/signup',
 [
   body('email')
     .isEmail()
@@ -21,17 +22,17 @@ router.post('/api/users/signup',
 validateRequest,
 async (request: Request, response: Response) => {
   const { email, password } = request.body;
+
   const existingUser = await User.findOne({ email });
 
   // check if user exists in db
   if (existingUser) {
-    throw new BadRequestError('Sorry, that email address is already in use');
+    throw new BadRequestError('Email in use');
   }
 
   const user = User.build({ email, password });
   await user.save();
 
-  // send off cookie/jwt here
   const userJwt = jwt.sign(
     {
       id: user.id,
@@ -40,13 +41,11 @@ async (request: Request, response: Response) => {
     process.env.JWT_KEY!
   );
 
-  // redefine entire object for TS
   request.session = {
-    jtw: userJwt
+    jwt: userJwt
   };
 
   response.status(201).send(user);
-
 });
 
 export { router as signupRouter };
