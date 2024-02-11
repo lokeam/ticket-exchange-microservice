@@ -13,7 +13,8 @@ _In active development_
 
 ## Project Roadmap
 - [X] Kubernetes + Ingress Nginx deployment setup
-- [ ] `Auth Service` - Everything related to user signup/signin/signout. Talks to MongoDB db.
+- [X] `Auth Service` - Everything related to user signup/signin/signout. Talks to MongoDB db.
+- [ ] Next.js client application
 - [ ] `Ticket Service` - Ticket creation / editing. Keeps track of whether a ticket may be updated. Talks to MongoDB db.
 - [ ] `Orders Service` - Order creation / editing. Talks to MongoDB db.
 - [ ] `Expiration Service` - Watches for orders to be created, cancels after set amount of time. Talks to Redis db.
